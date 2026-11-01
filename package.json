@@ -1,0 +1,37 @@
+{
+  "name": "qwik-cn-site",
+  "description": "Qwik 中文网站：可恢复、即时加载的 Web 框架",
+  "engines": {
+    "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
+  },
+  "engines-annotation": "Mostly required by sharp which needs a Node-API v9 compatible runtime",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode ssr",
+    "build": "qwik build",
+    "build.client": "vite build",
+    "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.types": "tsc --incremental --noEmit",
+    "preview": "qwik build preview && vite preview",
+    "start": "vite --open --mode ssr",
+    "qwik": "qwik"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@qwik.dev/core": "^2.0.0-rc.4",
+    "@qwik.dev/router": "^2.0.0-rc.4",
+    "@types/node": "25.6.0",
+    "eslint": "10.0.3",
+    "eslint-plugin-qwik": "^2.0.0-rc.4",
+    "globals": "17.0.0",
+    "prettier": "3.7.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1",
+    "typescript-plugin-css-modules": "latest",
+    "vite": "8.2.4",
+    "@fontsource-variable/noto-serif-sc": "^5.3.1",
+    "@fontsource-variable/noto-sans-sc": "^5.3.1",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0"
+  }
+}

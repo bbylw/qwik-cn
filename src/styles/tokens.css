@@ -1,0 +1,62 @@
+:root {
+  color-scheme: light;
+
+  --paper: light-dark(#f2ede2, #14130f);
+  --paper-raised: light-dark(#faf6ec, #1b1914);
+  --paper-sunk: light-dark(#e9e2d3, #24211a);
+
+  --ink: light-dark(#14130f, #f1ebdd);
+  --ink-soft: light-dark(#47433a, #c4bcaa);
+  --ink-faint: light-dark(#716a5b, #948b79);
+
+  --rule: light-dark(#d9d1bf, #343028);
+  --rule-strong: light-dark(#b6ac97, #4b453a);
+
+  --accent: light-dark(#d63c1e, #ff6b47);
+  --accent-text: light-dark(#a22a10, #ff9274);
+  --accent-soft: light-dark(rgba(214, 60, 30, 0.09), rgba(255, 107, 71, 0.12));
+  --accent-ink: light-dark(#fdf7ea, #1a1510);
+  --moss: light-dark(#586b46, #aabd90);
+  --moss-soft: light-dark(rgba(88, 107, 70, 0.1), rgba(170, 189, 144, 0.12));
+
+  --code-bg: light-dark(#181712, #0c0b09);
+  --code-ink: #ece5d6;
+  --code-dim: #8a8271;
+  --code-keyword: #ff9a78;
+  --code-string: #bacb9b;
+  --code-fn: #e9d09e;
+  --code-tag: #9ec1d1;
+  --code-number: #e7ba81;
+  --code-rule: rgba(236, 229, 214, 0.12);
+
+  --shadow-panel: 0 1px 0 rgba(20, 19, 15, 0.04),
+    0 30px 80px -48px rgba(20, 19, 15, 0.45);
+
+  --font-display: "Noto Serif SC Variable", "Songti SC", "STSong", serif;
+  --font-sans: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular",
+    monospace;
+
+  --container: 1240px;
+  --gutter: clamp(20px, 4.5vw, 56px);
+  --header-h: 68px;
+  --radius: 2px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+  }
+}
