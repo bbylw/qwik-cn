@@ -7,7 +7,7 @@
 
   --ink: light-dark(#14130f, #f1ebdd);
   --ink-soft: light-dark(#47433a, #c4bcaa);
-  --ink-faint: light-dark(#716a5b, #948b79);
+  --ink-faint: light-dark(#6b6455, #948b79);
 
   --rule: light-dark(#d9d1bf, #343028);
   --rule-strong: light-dark(#b6ac97, #4b453a);
@@ -33,8 +33,9 @@
     0 30px 80px -48px rgba(20, 19, 15, 0.45);
 
   --font-display: "Noto Serif SC Variable", "Songti SC", "STSong", serif;
-  --font-sans: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei",
-    sans-serif;
+  /* 正文使用系统字体：CJK web font 的分片数量与首屏成本不成比例 */
+  --font-sans: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei",
+    "Noto Sans CJK SC", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular",
     monospace;
 

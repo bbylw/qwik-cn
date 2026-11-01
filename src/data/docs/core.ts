@@ -62,14 +62,18 @@ state.tags.push('streaming');`,
       },
       {
         type: "p",
-        text: "store 中的方法需要用 `$()` 包装才能序列化。需要 `this` 时使用 `function` 关键字，并在类型里显式声明：",
+        text: "store 中的方法需要用 `$()` 包装才能序列化。需要 `this` 时使用 `function` 关键字，并把接口单独声明出来——直接在类型参数里写 `typeof counter` 会触发 TS7022 自引用错误。",
       },
       {
         type: "code",
-        code: `const counter = useStore<{
+        code: `import { \$, type QRL } from '@qwik.dev/core';
+
+interface CounterStore {
   count: number;
-  increment: QRL<(this: typeof counter) => void>;
-}>({
+  increment: QRL<(this: CounterStore) => void>;
+}
+
+const counter = useStore<CounterStore>({
   count: 0,
   increment: \$(function () {
     this.count++;
@@ -313,26 +317,26 @@ return (
       },
       {
         type: "code",
-        title: "src/components/clock.tsx",
+        title: "src/components/search.tsx",
         code: `import { component\$, useSignal, useTask\$ } from '@qwik.dev/core';
 
 export default component\$(() => {
-  const time = useSignal('');
+  const keyword = useSignal('');
+  const matches = useSignal<string[]>([]);
 
-  useTask\$(({ track, cleanup }) => {
-    const id = setInterval(() => {
-      time.value = new Date().toLocaleTimeString();
-    }, 1000);
-
-    cleanup(() => clearInterval(id));
+  useTask\$(({ track }) => {
+    track(keyword);
+    matches.value = articles.filter((item) =>
+      item.title.includes(keyword.value)
+    );
   });
 
-  return <time>{time.value}</time>;
+  return <input bind:value={keyword} placeholder="搜索文章" />;
 });`,
       },
       {
         type: "p",
-        text: "注意：上面的 `useTask$` 没有跟踪状态，因此只运行一次。计时器带来的后续更新由 `setInterval` 触发。",
+        text: "关键区别在于执行位置：服务端执行过的 `useTask$`，浏览器恢复时不会重跑。没有 `track()` 的任务因此等价于「只跑一次的初始化」，而带 `track()` 的任务会在浏览器里跟随状态变化重新执行。",
       },
       { type: "h2", text: "用 track() 响应状态变化" },
       {
@@ -392,6 +396,36 @@ export default component\$(() => {
   observer.observe(ref.value!);
   cleanup(() => observer.disconnect());
 });`,
+      },
+      {
+        type: "p",
+        text: "定时器同理。计时必须在组件真正挂载后启动，且只存在于浏览器，这类副作用必须放在 `useVisibleTask$` 里：",
+      },
+      {
+        type: "code",
+        title: "src/components/clock.tsx",
+        code: `import { component\$, useSignal, useVisibleTask\$ } from '@qwik.dev/core';
+
+export default component\$(() => {
+  const time = useSignal('');
+
+  useVisibleTask\$(({ cleanup }) => {
+    const tick = () => {
+      time.value = new Date().toLocaleTimeString();
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    cleanup(() => clearInterval(id));
+  });
+
+  return <time>{time.value}</time>;
+});`,
+      },
+      {
+        type: "callout",
+        tone: "warn",
+        title: "计时器不要放进 useTask$",
+        text: "无 `track()` 的 `useTask$` 只在服务端跑一次，浏览器恢复后不会再执行——定时器永远不会启动；同时服务端还会留下一个没人清理的 interval。只服务于浏览器、且必须等挂载后才开始的副作用，一律用 `useVisibleTask$`。",
       },
       {
         type: "p",

@@ -368,21 +368,21 @@ export default component\$(() => {
       { type: "h2", text: "校验与失败" },
       {
         type: "p",
-        text: "Qwik 内置与 Zod 的集成。`zod$()` 在 action 执行前校验表单，类型会自动收窄；失败信息进入 `fieldErrors`。",
+        text: "Qwik Router 内置与 Zod 的集成：`zod$()` 在 action 执行前校验表单，类型会自动收窄；失败信息进入 `fieldErrors`。`zod$` 从 `@qwik.dev/router` 导入，回调参数就是 zod 实例（项目里需要先装 `zod`）。",
       },
       {
         type: "code",
-        code: `import { zod\$, z } from '@qwik.dev/utils';
+        code: `import { routeAction\$, zod\$ } from '@qwik.dev/router';
 
 export const useSignup = routeAction\$(
   async (data) => {
     const user = await db.users.create(data);
     return { success: true, id: user.id };
   },
-  zod\$({
+  zod\$((z) => ({
     name: z.string().min(2),
     email: z.string().email(),
-  })
+  }))
 );`,
       },
       {

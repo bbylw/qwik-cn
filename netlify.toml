@@ -1,0 +1,18 @@
+[build]
+  command = "bun run build"
+  publish = "dist"
+
+[build.environment]
+  # 与本地开发保持一致，避免 lockfile 解析差异
+  BUN_VERSION = "1.4.4"
+  # 与 Vercel 默认运行时对齐；Netlify 默认是 24，这里显式抬到 26
+  NODE_VERSION = "26"
+
+# 每次 push 到主分支触发生产部署，其余分支与 PR 走 Deploy Preview
+[context.production]
+  command = "bun run build"
+
+[context.deploy-preview]
+  command = "bun run build"
+
+# 缓存头统一由 public/_headers 提供，此处不重复声明

@@ -2,7 +2,8 @@ import { component$ } from "@qwik.dev/core";
 import type { DocumentHead } from "@qwik.dev/router";
 import { Link } from "@qwik.dev/router";
 
-export default component$(() => {
+/** 404 视图本体。`/docs/[...slug]` 里文档不存在时也复用它，避免裸错误响应。 */
+export const NotFoundView = component$(() => {
   return (
     <section class="notfound">
       <div class="notfound-main">
@@ -31,6 +32,9 @@ export default component$(() => {
   );
 });
 
+export default NotFoundView;
+
 export const head: DocumentHead = {
   title: "页面不存在 · Qwik 中文",
+  meta: [{ name: "robots", content: "noindex" }],
 };

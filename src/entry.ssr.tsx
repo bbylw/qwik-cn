@@ -10,17 +10,12 @@ export default createRenderer((opts) => {
         lang: "zh-CN",
         ...opts.containerAttributes,
       },
+      // 只保留兜底 title。description 交给各路由的 `head` 提供：
+      // Qwik 对 meta 是追加语义，这里再放一份会让每个页面都输出两条 description。
       serverData: {
         ...opts.serverData,
         documentHead: {
           title: "Qwik 中文 · 可恢复的 Web 框架",
-          meta: [
-            {
-              name: "description",
-              content:
-                "Qwik 是面向现代 Web 的可恢复框架：HTML 立即可用，交互按需加载，应用规模增长而启动成本不变。",
-            },
-          ],
         },
       },
     },

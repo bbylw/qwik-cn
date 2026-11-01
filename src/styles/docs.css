@@ -478,20 +478,17 @@
 }
 
 .search-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  padding: 0.7rem 0.8rem;
   border-left: 2px solid transparent;
+  cursor: pointer;
 }
 
 .search-result[data-active="true"] {
   border-left-color: var(--accent);
   background: var(--accent-soft);
-}
-
-.search-result > a {
-  display: flex;
-  flex-direction: column;
-  gap: 0.22rem;
-  padding: 0.7rem 0.8rem;
-  text-decoration: none;
 }
 
 .search-result-kicker {

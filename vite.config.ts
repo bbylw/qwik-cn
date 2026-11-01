@@ -4,7 +4,9 @@
  */
 import { qwikVite } from "@qwik.dev/core/optimizer";
 import { qwikRouter } from "@qwik.dev/router/vite";
-import { defineConfig, type UserConfig } from "vite";
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { defineConfig, loadEnv, type Plugin, type UserConfig } from "vite";
 import pkg from "./package.json";
 
 type PkgDep = Record<string, string>;
@@ -19,8 +21,22 @@ errorOnDuplicatesPkgDeps(devDependencies, dependencies);
  * Note that Vite normally starts from `index.html` but the qwikRouter plugin makes start at `src/entry.ssr.tsx` instead.
  */
 export default defineConfig(({ command, mode }): UserConfig => {
+  // 同时读取 .env* 与 process.env，构建时用 `VITE_SITE_URL=... bun run build` 即可覆盖。
+  const siteOrigin = (loadEnv(mode, process.cwd()).VITE_SITE_URL ?? "").replace(
+    /\/$/,
+    "",
+  );
+
   return {
-    plugins: [qwikRouter(), qwikVite()],
+    plugins: [
+      qwikRouter(),
+      qwikVite(),
+      robotsTxt(siteOrigin),
+    ],
+    // 站点域名注入到客户端与服务端两份 bundle，用于 canonical 与链接生成。
+    define: {
+      __SITE_URL__: JSON.stringify(siteOrigin),
+    },
     // This tells Vite which dependencies to pre-build in dev mode.
     optimizeDeps: {
       // Put problematic deps that break bundling here, mostly those with binaries.
@@ -61,6 +77,31 @@ export default defineConfig(({ command, mode }): UserConfig => {
 });
 
 // *** utils ***
+
+/**
+ * 生成 robots.txt。sitemap 的绝对地址依赖站点域名，未配置时省略该行（规范要求绝对 URL）。
+ */
+function robotsTxt(siteOrigin: string): Plugin {
+  let outDir = "dist";
+  let isSsr = false;
+
+  return {
+    name: "qwik-cn-robots-txt",
+    apply: "build",
+    configResolved(config) {
+      outDir = config.build.outDir;
+      isSsr = Boolean(config.build.ssr);
+    },
+    closeBundle() {
+      if (isSsr) return;
+      const lines = ["User-agent: *", "Allow: /"];
+      if (siteOrigin) {
+        lines.push("", `Sitemap: ${siteOrigin}/sitemap.xml`);
+      }
+      writeFileSync(resolve(outDir, "robots.txt"), `${lines.join("\n")}\n`);
+    },
+  };
+}
 
 /**
  * Function to identify duplicate dependencies and throw an error

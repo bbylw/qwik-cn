@@ -36,7 +36,7 @@ yarn create qwik@latest`,
         type: "callout",
         tone: "note",
         title: "环境",
-        text: "需要 Node.js 20 或更新版本。Qwik 文档给出的最低版本是 18.17；当前 Vite 构建链建议使用最新的 LTS。",
+        text: "需要 Node.js 20.19+ 或 22.12+。这是 Vite 8 构建链的硬性要求，项目模板的 `engines` 字段与之一致，低于该版本构建会失败。",
       },
       { type: "h2", text: "启动开发服务器" },
       {

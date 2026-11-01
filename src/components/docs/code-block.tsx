@@ -1,4 +1,3 @@
-import { component$ } from "@qwik.dev/core";
 import { CopyButton } from "../site/copy-button";
 
 const KEYWORDS = new Set([
@@ -98,47 +97,48 @@ function tokenize(code: string): Token[] {
   return tokens;
 }
 
-export const CodeBlock = component$(
-  (props: {
-    code: string;
-    lang?: string;
-    title?: string;
-    compact?: boolean;
-  }) => {
-    const tokens = tokenize(props.code);
-    const lang = props.lang ?? "tsx";
-    return (
-      <figure
-        class={`code-block ${props.compact ? "code-block-compact" : ""}`}
+/**
+ * 普通函数而非 `component$`：代码块是无状态的纯展示，
+ * 若作为组件边界，`code` 会被写进 qwik/json 序列化数据里，
+ * 导致每段示例在 HTML 中出现两遍。
+ */
+export function CodeBlock(props: {
+  code: string;
+  lang?: string;
+  title?: string;
+  compact?: boolean;
+}) {
+  const tokens = tokenize(props.code);
+  const lang = props.lang ?? "tsx";
+  return (
+    <figure class={`code-block ${props.compact ? "code-block-compact" : ""}`}>
+      <figcaption class="code-head">
+        <span class="code-sq" aria-hidden="true"></span>
+        <span class="code-lang mono">{lang}</span>
+        {props.title ? (
+          <span class="code-title mono">{props.title}</span>
+        ) : (
+          <span class="code-title mono">code</span>
+        )}
+        <CopyButton text={props.code} label="复制代码" compact />
+      </figcaption>
+      <pre
+        class="code-pre"
+        tabIndex={0}
+        aria-label={props.title ? `${props.title} 代码示例` : "代码示例"}
       >
-        <figcaption class="code-head">
-          <span class="code-sq" aria-hidden="true"></span>
-          <span class="code-lang mono">{lang}</span>
-          {props.title ? (
-            <span class="code-title mono">{props.title}</span>
-          ) : (
-            <span class="code-title mono">code</span>
+        <code>
+          {tokens.map((token, index) =>
+            token.cls ? (
+              <span key={index} class={token.cls}>
+                {token.text}
+              </span>
+            ) : (
+              <span key={index}>{token.text}</span>
+            )
           )}
-          <CopyButton text={props.code} label="复制代码" compact />
-        </figcaption>
-        <pre
-          class="code-pre"
-          tabIndex={0}
-          aria-label={props.title ? `${props.title} 代码示例` : "代码示例"}
-        >
-          <code>
-            {tokens.map((token, index) =>
-              token.cls ? (
-                <span key={index} class={token.cls}>
-                  {token.text}
-                </span>
-              ) : (
-                <span key={index}>{token.text}</span>
-              )
-            )}
-          </code>
-        </pre>
-      </figure>
-    );
-  }
-);
+        </code>
+      </pre>
+    </figure>
+  );
+}

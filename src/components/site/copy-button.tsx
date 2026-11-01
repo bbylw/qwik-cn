@@ -11,7 +11,7 @@ export const CopyButton = component$(
         class={`copy-btn ${props.compact ? "copy-btn-compact" : ""} ${
           copied.value ? "is-copied" : ""
         }`}
-        aria-label={`${label}：${props.text}`}
+        aria-label={label}
         onClick$={async () => {
           try {
             await navigator.clipboard.writeText(props.text);

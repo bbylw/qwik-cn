@@ -231,21 +231,20 @@ export const SearchDialog = component$(() => {
                       onMouseEnter$={() => {
                         activeIndex.value = index;
                       }}
+                      onClick$={() => {
+                        open.value = false;
+                        nav(`/docs/${result.entry.slug}/`);
+                      }}
                     >
-                      <Link
-                        href={`/docs/${result.entry.slug}/`}
-                        onClick$={closeSearch}
-                      >
-                        <span class="search-result-kicker mono">
-                          {section?.en} / {result.entry.title}
-                        </span>
-                        <span class="search-result-title">
-                          {result.entry.title}
-                        </span>
-                        <span class="search-result-snippet">
-                          {result.snippet}
-                        </span>
-                      </Link>
+                      <span class="search-result-kicker mono">
+                        {section?.en} / {result.entry.title}
+                      </span>
+                      <span class="search-result-title">
+                        {result.entry.title}
+                      </span>
+                      <span class="search-result-snippet">
+                        {result.snippet}
+                      </span>
                     </li>
                   );
                 })}
